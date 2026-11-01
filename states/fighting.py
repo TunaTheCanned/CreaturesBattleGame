@@ -87,12 +87,15 @@ class FightingState(State):
                 self.f.write(f"Turn {self.turns}: {result}\n")
         except Exception as e:
             print(f"{move_name} failed: {e}")
-        if defender.hp <= 0:
-            self.game_over()
 
         self.log_message = [result]
         self.log_timer = self.log_duration
         self.turns += 1
+
+        if defender.hp <= 0:
+            self.game_over()
+            return
+
         self.end_turn()
 
     def handle_event(self, event):
@@ -116,6 +119,10 @@ class FightingState(State):
             except Exception as e:
                 print(f"status effect log failed: {e}")
 
+        if defender.hp <= 0:
+            self.game_over()
+            return
+
         self.current_turn = 1 - self.current_turn
         self.update_move_buttons()
 
@@ -132,7 +139,7 @@ class FightingState(State):
             if effect["type"] == "POISON":
                 creature -= effect["damage"]
                 if creature.hp <= 0:
-                    self.game_over()
+                    return messages
                 messages.append(f"{creature.name} takes {effect['damage']} poison damage")
 
             elif effect["type"] == "REGEN":

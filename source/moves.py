@@ -44,9 +44,9 @@ def perform_move(move_name, attacker, defender):
             return f"{attacker.name} scares {defender.name}"
 
         case "DRAIN":
-            damage = int(attacker.attack * 0.2)
-            defender.hp -= damage
-            attacker.hp += damage
+            damage = max(1,int(attacker.attack * 0.2))
+            defender -= damage
+            attacker += damage
             if attacker.hp > attacker.max_hp: attacker.hp = attacker.max_hp
             return f"{attacker.name} drains {damage} HP from {defender.name}"
 
